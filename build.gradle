@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+println("Building Examples")
+
+repositories {
+    //In case you want to pull something from your local maven repo, uncomment below line
+    //mavenLocal()
+    maven {
+        logger.info("Fetching dependencies from central nexus")
+        url "http://nexus.intuit.net/nexus/content/groups/public/"
+    }
+}
+
+dependencies {
+    compile('javax.ws.rs:javax.ws.rs-api:2.0')
+    compile('commons-codec:commons-codec:1.4')
+    compile('org.apache.activemq:activemq-all:5.9.0')
+    compile('junit:junit:4.10')
+    compile('com.fasterxml.jackson.core:jackson-core:2.6.6')
+    compile('com.fasterxml.jackson.core:jackson-annotations:2.6.6')
+    compile('com.fasterxml.jackson.core:jackson-databind:2.6.6')
+    //compile('com.intuit.payroll:payroll-api-models:2018R02-SNAPSHOT')
+    compile('com.intuit.sbg:nucleus:4.2.15')
+    compile('junit:junit:4.12')
+    compile('pl.pragmatists:JUnitParams:1.1.1')
+}
+
+sourceSets {
+
+    main {
+        java{
+            srcDirs = ['src/main']
+        }
+    }
+    test {
+        java{
+            srcDirs = ['src/test']
+        }
+    }
+
+}
