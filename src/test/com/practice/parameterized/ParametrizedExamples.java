@@ -1,6 +1,7 @@
 package com.practice.parameterized;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by pbhattacharya on 4/24/18.
  */
 @RunWith(JUnitParamsRunner.class)
-public class Examples {
+public class ParametrizedExamples {
 
 
 	@Test
@@ -109,9 +110,6 @@ public class Examples {
 		String val = "on";
 		Assert.assertFalse(Boolean.valueOf(val));
 	}
-
-
-
 
 	public Object sumParameters() {
 		int  sum1 = 9;
@@ -389,5 +387,245 @@ public class Examples {
 			current = temp;
 		}
 	}
+
+	@Test
+	@Parameters({
+			"abcabcbb,abc",
+			"bbbbb,b",
+			"pwwkew,wke",
+			",",
+			"c,c",
+			"au,au",
+	})
+	public void testLongestSubString(String s, String expectedSubString) {
+		// String runningMax
+		// Loop through char[]
+		// while (i<length)
+			// For (j=i; j < length; j++)
+			//    if set ==null
+			//      set = a new set
+			//    if set NOT contains char,
+			//       s += ch
+		    //       if(s.lenght > runningMax)
+		    //              runningMax = s
+			//    else
+		    //       i++;
+		    //       break
+
+		String runningMax = s.length() > 0 ? String.valueOf(s.charAt(0)) : "";
+		int i = 0;
+		while (i< s.length()) {
+			Set<Character> set = new HashSet<>();
+			String currentMax = "";
+			StringBuilder currentMaxBuilder = new StringBuilder();
+			for(int j=i; j < s.length(); j++) {
+				char ch = s.charAt(j);
+				if(!set.contains(ch)) {
+					currentMaxBuilder.append(ch);
+					set.add(s.charAt(j));
+					if(j == s.length() -1) {
+						i++;
+						currentMax = currentMaxBuilder.toString();
+						if(currentMax.length() > runningMax.length()) {
+							runningMax = currentMax;
+						}
+					}
+				} else {
+					i++;
+					currentMax = currentMaxBuilder.toString();
+					if(currentMax.length() > runningMax.length()) {
+						runningMax = currentMax;
+					}
+					break;
+				}
+			}
+		}
+
+		assertEquals(expectedSubString, runningMax);
+
+	}
+
+	@Test
+	@Parameters({
+			"abcabcbb,3",
+				"bbbbb,1",
+				"pwwkew,3",
+				",0",
+				"c,1",
+				"au,2"
+	})
+	public void testLongestSubStringv2(String s, int expectedLength) {
+		// String runningMax
+		// Loop through char[]
+		// while (i<length)
+		// For (j=i; j < length; j++)
+		//    if set ==null
+		//      set = a new set
+		//    if set NOT contains char,
+		//       s += ch
+		//       if(s.lenght > runningMax)
+		//              runningMax = s
+		//    else
+		//       i++;
+		//       break
+
+		int len = s.length();
+		int max = 0, start = 0;
+		HashMap<Character, Integer> chars = new HashMap<>();
+		for (int i = 0; i < len; i++) {
+			Character c = s.charAt(i);
+			if (chars.containsKey(c)) {
+				start = Math.max(start, chars.get(c) + 1);
+			}
+			max = Math.max(max, i - start + 1);
+			chars.put(c, i);
+		}
+		assertEquals(expectedLength, max);
+
+	}
+
+	@Test
+	@Parameters(method= "testSortedArrays")
+	public void testMedianOfSortedArrays(int[] arr1, int[] arr2, double expectedMedian) {
+		// create one max heap and min heap
+		// Loop through th
+	}
+
+	public Object testSortedArrays() {
+		int[]  arr1 = {1,3};
+		int[]  arr2 = {2};
+		double expectedMedian1 = 2;
+
+		int[]  arr3 = {1,2};
+		int[]  arr4 = {3,4};
+		double expectedMedian2 = 2.5;
+
+
+		return $(
+				$(arr1, arr2, expectedMedian1),
+				$(arr3, arr4, expectedMedian2)
+		);
+	}
+
+	@Test
+	@Parameters({
+			"123,321",
+			"-45,-54",
+			"-12000,-21",
+			"-120,-21",
+			"-1,-1",
+			"99,99",
+			"0,0",
+			"9,9",
+			"10,1", "1534236469,0"
+	})
+	public void testReverseInteger(final int x, final int expectedValue) {
+		// convert value to String
+		// check 1st char if - append to sb
+		// Loop reverse
+		//      ignore char if zero continues from start
+		//      if NOT ignore
+		//          append to sb
+		String s = String.valueOf(x);
+		int endIndex = s.charAt(0) == '-' ? 1 : 0;
+		StringBuilder sb = new StringBuilder();
+		if (endIndex == 1) {
+			sb.append('-');
+		}
+
+		int startIndex = s.length() - 1;
+		boolean ignore = true;
+		for (int i = startIndex; i >= endIndex; i--) {
+			ignore = ignore && s.charAt(i) == '0' && s.length() != 1;
+			if (!ignore) {
+				sb.append(s.charAt(i));
+			}
+		}
+
+		int actual = 0;
+		try {
+			actual = Integer.parseInt(sb.toString());
+		} catch (NumberFormatException ne) {
+			System.out.println("Integer value over-flowed returning 0");
+		}
+		assertEquals(expectedValue, actual);
+	}
+
+	@Test
+	@Parameters(method = "testParams")
+	public void testInsertionIndex(final int[] nums, final int target, final int expected)  {
+		// index = 0
+		// if a[] not empty
+		//     l = 0, r = a[len -1]
+		// while(r>=l)
+		//    if(a[m] ==
+		int actual = -1;
+		if(nums.length > 0) {
+			int l = 0;
+			int r = nums.length -1;
+			while(r>=l) {
+				int m = (l+r)/2;
+				if(nums[m] == target) {
+					actual = m;
+					break;
+				} else if(target> nums[m]) {
+					l = m+1;
+				} else {
+					r = m-1;
+				}
+			}
+
+			if(l>=r && actual == -1) {
+				if(r==-1 || target> nums[r]) {
+					actual = r+1;
+				} else if(target < nums[l]) {
+					actual = (l==0) ? 0 : l-1;
+				}
+			}
+		} else {
+			actual = 0;
+		}
+
+		TestCase.assertEquals(expected, actual);
+	}
+
+	public Object testParams() {
+		int[] nums1 = {1,2,5,8,10};
+		int target1 = 3;
+		int expected1 = 2;
+
+		int[] nums2 = {1,2,5,8,10};
+		int target2 = 5;
+		int expected2 = 2;
+
+		int[] nums3 = {1,2,5,8,10};
+		int target3 = 11;
+		int expected3 = 5;
+
+		int[] nums4 = {1};
+		int target4 = 2;
+		int expected4 = 1;
+
+		int[] nums5 = {5};
+		int target5 = 2;
+		int expected5 = 0;
+
+		int[] nums6 = {};
+		int target6 = 2;
+		int expected6 = 0;
+
+		return $(
+				$(nums1, target1, expected1),
+				$(nums2, target2, expected2),
+				$(nums3, target3, expected3),
+				$(nums4, target4, expected4),
+				$(nums5, target5, expected5),
+				$(nums6, target6, expected6)
+		);
+
+	}
+
+
+
 
 }
